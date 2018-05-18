@@ -30,7 +30,7 @@ int main() {
     int **product;
 
     const int limit = 255;
-    const int step = 15;
+    const int step = 12;
     
     for (int i=0; i<r1; i++) {
         for (int j=0; j<c1; j++) {
@@ -52,8 +52,8 @@ int main() {
         }
     }
     
-    start = clock();
     SparseMatrix matrix(r1, c1, r2, c2);
+    start = clock();
     matrix.formatTriplets(a, b);
     product = matrix.multiply();
     stop = clock();
