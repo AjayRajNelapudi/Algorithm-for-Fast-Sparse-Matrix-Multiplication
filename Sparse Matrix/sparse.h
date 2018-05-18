@@ -9,19 +9,23 @@
 #ifndef Header_h
 #define Header_h
 
+#include <iostream>
 #include <cstdlib>
 #include <assert.h>
-#define r1 5
-#define c1 5
-#define r2 5
-#define c2 5
+#define r1 100
+#define c1 100
+#define r2 100
+#define c2 100
+using namespace std;
 
 class SparseMatrix {
     int **a, **b;
     int rowsA, columnsA, rowsB, columnsB;
+
+public:
     int **tripletA, **tripletB;
     int **product;
-public:
+    
     SparseMatrix(int rr1, int cc1, int rr2, int cc2) {
         assert(c1 == r2);
         
@@ -58,6 +62,7 @@ public:
     }
     
     void formatTriplets(int a[r1][c1], int b[r2][c2]) {
+        //cout << "Formatting" << endl;
         int elements = 0;
         for (int i=0; i<rowsA; i++) {
             for (int j=0; j<columnsA; j++) {
@@ -92,6 +97,7 @@ public:
     }
     
     int** multiply() {
+        //cout << "Multiplying" << endl;
         for (int i=1; i<=tripletA[0][2]; i++) {
             for (int j=1; j<=tripletB[0][2]; j++) {
                 if (tripletA[i][1] == tripletB[j][0]) {
