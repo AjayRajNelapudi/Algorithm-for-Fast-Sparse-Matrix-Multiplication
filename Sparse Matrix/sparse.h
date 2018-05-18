@@ -12,10 +12,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <assert.h>
-#define r1 100
-#define c1 100
-#define r2 100
-#define c2 100
+#define r1 1000
+#define c1 1000
+#define r2 1000
+#define c2 1000
 using namespace std;
 
 class SparseMatrix {
@@ -98,8 +98,9 @@ public:
     
     int** multiply() {
         //cout << "Multiplying" << endl;
+        int j = 1;
         for (int i=1; i<=tripletA[0][2]; i++) {
-            for (int j=1; j<=tripletB[0][2]; j++) {
+            for ( ; j<=tripletB[0][2] && tripletA[i][1] <= tripletB[j][0]; j++) {
                 if (tripletA[i][1] == tripletB[j][0]) {
                     product[tripletA[i][0]][tripletB[j][1]]+= tripletA[i][2] * tripletB[j][2];
                 }

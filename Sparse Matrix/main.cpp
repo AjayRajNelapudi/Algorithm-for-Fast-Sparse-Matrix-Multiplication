@@ -30,7 +30,7 @@ int main() {
     int **product;
 
     const int limit = 255;
-    const int step = 12;
+    const int step = 2;
     
     for (int i=0; i<r1; i++) {
         for (int j=0; j<c1; j++) {
