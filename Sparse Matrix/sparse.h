@@ -12,17 +12,17 @@
 #include <iostream>
 #include <cstdlib>
 #include <assert.h>
-#define r1 1000
-#define c1 1000
-#define r2 1000
-#define c2 1000
 using namespace std;
 
-class SparseMatrix {
-    int **a, **b;
-    int rowsA, columnsA, rowsB, columnsB;
+#define r1 100
+#define c1 100
+#define r2 100
+#define c2 100
 
+class SparseMatrix {
 public:
+    int *map;
+    int rowsA, columnsA, rowsB, columnsB;
     int **tripletA, **tripletB;
     int **product;
     
@@ -35,24 +35,19 @@ public:
         rowsB = rr2;
         columnsB = cc2;
         
-        a = new int*[r1];
-        for (int i=0; i<r1; i++) {
-            a[i] = new int[c1];
-        }
-        
-        b = new int*[r2];
-        for (int i=0; i<r2; i++) {
-            b[i] = new int[c2];
-        }
-        
-        tripletA = new int*[r1 * c1];
-        for (int i=0; i<r1*c1; i++) {
+        tripletA = new int*[r1 * c1 + 1];
+        for (int i=0; i<r1*c1 + 1; i++) {
             tripletA[i] = new int[3];
         }
         
-        tripletB = new int*[r2 * c2];
-        for (int i=0; i<r2*c2; i++) {
+        tripletB = new int*[r2 * c2 + 1];
+        for (int i=0; i<r2*c2 + 1; i++) {
             tripletB[i] = new int[3];
+        }
+        
+        map = new int[r2];
+        for (int i=0; i<r2; i++) {
+            map[i] = -1;
         }
         
         product = new int*[r1];
@@ -62,8 +57,7 @@ public:
     }
     
     void formatTriplets(int a[r1][c1], int b[r2][c2]) {
-        //cout << "Formatting" << endl;
-        int elements = 0;
+        int elements = 0, prev = -1;
         for (int i=0; i<rowsA; i++) {
             for (int j=0; j<columnsA; j++) {
                 if (a[i][j] == 0)
@@ -86,6 +80,12 @@ public:
                     continue;
                 
                 elements++;
+                
+                if (prev != i) {
+                    map[i] = elements;
+                    prev = i;
+                }
+                
                 tripletB[elements][0] = i;
                 tripletB[elements][1] = j;
                 tripletB[elements][2] = b[i][j];
@@ -96,14 +96,27 @@ public:
         tripletB[0][2] = elements;
     }
     
-    int** multiply() {
-        //cout << "Multiplying" << endl;
-        int j = 1;
+    /*int** multiply() {
         for (int i=1; i<=tripletA[0][2]; i++) {
-            for ( ; j<=tripletB[0][2] && tripletA[i][1] <= tripletB[j][0]; j++) {
+            for (int j = 1; j <= tripletB[0][2] && tripletA[i][1] >= tripletB[j][0]; j++) {
                 if (tripletA[i][1] == tripletB[j][0]) {
                     product[tripletA[i][0]][tripletB[j][1]]+= tripletA[i][2] * tripletB[j][2];
                 }
+            }
+        }
+        return product;
+    }*/
+    
+    int** multiply() {
+        for (int i=1; i<=tripletA[0][2]; i++) {
+            int j = map[tripletA[i][1]];
+            
+            if (j == -1)
+                continue;
+            
+            while (tripletA[i][1] == tripletB[j][0]) {
+                product[tripletA[i][0]][tripletB[j][1]]+= tripletA[i][2] * tripletB[j][2];
+                j++;
             }
         }
         return product;
